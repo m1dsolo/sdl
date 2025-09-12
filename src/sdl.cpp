@@ -1,5 +1,8 @@
 #include <sdl/sdl.hpp>
 
+#include <numbers>
+#include <cmath>
+
 namespace sdl {
 
 bool SDL::init(SDL_InitFlags init_flags, const std::string& win_name, int w, int h, SDL_WindowFlags window_flags) {
@@ -110,22 +113,103 @@ void SDL::set_font_size(float ptsize) {
 SDL_Texture* SDL::create_texture(int w, int h, SDL_Color color, SDL_TextureAccess access, SDL_PixelFormat format) {
     access = static_cast<SDL_TextureAccess>(access | SDL_TEXTUREACCESS_TARGET);
     SDL_Texture* texture = SDL_CreateTexture(renderer_, format, access, w, h);
-    set_render_target(texture);
+    TargetGuard guard{texture};
     set_color(color);
     render_clear();
-    set_render_target(nullptr);
 
     return texture;
 }
 
-void SDL::render_fill_rect(const SDL_FRect* dst, SDL_Color color) {
-    set_color(color);
-    SDL_RenderFillRect(renderer_, dst);
+SDL_Texture* SDL::create_circle_texture(float radius, SDL_Color color) {
+    auto size = static_cast<int>(radius * 2);
+    auto texture = create_texture(size, size, TRANSPARENT, SDL_TEXTUREACCESS_TARGET);
+    set_blend_mode(texture, SDL_BLENDMODE_BLEND);
+    auto target = TargetGuard{texture};
+    SDL_FRect dst = {0.f, 0.f, static_cast<float>(size) - 1.f, static_cast<float>(size) - 1.f};
+    render_circle(&dst, color);
+    return texture;
+}
+
+SDL_Texture* SDL::create_filled_circle_texture(float radius, SDL_Color color) {
+    auto size = static_cast<int>(radius * 2);
+    auto texture = create_texture(size, size, TRANSPARENT, SDL_TEXTUREACCESS_TARGET);
+    set_blend_mode(texture, SDL_BLENDMODE_BLEND);
+    auto target = TargetGuard{texture};
+    SDL_FRect dst = {0.f, 0.f, static_cast<float>(size) - 1.f, static_cast<float>(size) - 1.f};
+    render_filled_circle(&dst, color);
+    return texture;
 }
 
 void SDL::render_rect(const SDL_FRect* dst, SDL_Color color) {
     set_color(color);
     SDL_RenderRect(renderer_, dst);
+}
+
+void SDL::render_filled_rect(const SDL_FRect* dst, SDL_Color color) {
+    set_color(color);
+    SDL_RenderFillRect(renderer_, dst);
+}
+
+void SDL::render_circle(const SDL_FRect* dst, SDL_Color color) {
+    set_color(color);
+    
+    float center_x = dst->x + dst->w / 2.0f;
+    float center_y = dst->y + dst->h / 2.0f;
+    float radius = std::min(dst->w, dst->h) / 2.0f;
+    
+    const int segments = 64;
+    SDL_FPoint points[segments + 1];
+    
+    for (int i = 0; i <= segments; ++i) {
+        float angle = (i * 2.0f * std::numbers::pi_v<float>) / segments;
+        points[i].x = center_x + std::cos(angle) * radius;
+        points[i].y = center_y + std::sin(angle) * radius;
+    }
+    
+    SDL_RenderLines(renderer_, points, segments + 1);
+}
+
+void SDL::render_filled_circle(const SDL_FRect* dst, SDL_Color color) {
+    set_color(color);
+
+    const float center_x = dst->x + dst->w / 2.0f;
+    const float center_y = dst->y + dst->h / 2.0f;
+    const float radius = std::min(dst->w, dst->h) / 2.0f;
+
+    const int segments = 64;
+    
+    SDL_Vertex vertices[segments + 1];
+    
+    vertices[0] = {center_x, center_y};
+
+    for (int i = 0; i < segments; ++i) {
+        const float angle = (i * 2.0f * std::numbers::pi_v<float>) / segments;
+        vertices[i + 1].position.x = center_x + std::cos(angle) * radius;
+        vertices[i + 1].position.y = center_y + std::sin(angle) * radius;
+        vertices[i + 1].color = {
+            color.r / 255.f,
+            color.g / 255.f,
+            color.b / 255.f,
+            color.a / 255.f
+        };
+        vertices[i + 1].tex_coord = {0.f, 0.f};
+    }
+
+    int indexs[segments * 3];
+    for (int i = 0; i < segments; ++i) {
+        indexs[i * 3] = 0;
+        indexs[i * 3 + 1] = i + 1;
+        indexs[i * 3 + 2] = (i + 1) % segments + 1;
+    }
+
+    SDL_RenderGeometry(
+        renderer_,
+        nullptr,
+        vertices,
+        segments + 1,
+        indexs,
+        segments * 3
+    );
 }
 
 void SDL::set_blend_mode(SDL_Surface* surface, SDL_BlendMode mode) {

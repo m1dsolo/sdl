@@ -53,9 +53,13 @@ public:
     static SDL_Texture* create_texture(SDL_Surface* surface);
     static SDL_Surface* create_surface(int w, int h, SDL_Color color = BLACK, SDL_PixelFormat format = SDL_PIXELFORMAT_RGBA8888);
     static SDL_Texture* create_texture(int w, int h, SDL_Color color = BLACK, SDL_TextureAccess access = SDL_TEXTUREACCESS_STATIC, SDL_PixelFormat format = SDL_PIXELFORMAT_RGBA8888);
+    static SDL_Texture* create_circle_texture(float radius, SDL_Color color = BLACK);
+    static SDL_Texture* create_filled_circle_texture(float radius, SDL_Color color = BLACK);
 
-    static void render_fill_rect(const SDL_FRect* dst, SDL_Color color);
     static void render_rect(const SDL_FRect* dst, SDL_Color color);
+    static void render_filled_rect(const SDL_FRect* dst, SDL_Color color);
+    static void render_circle(const SDL_FRect* dst, SDL_Color color);
+    static void render_filled_circle(const SDL_FRect* dst, SDL_Color color);
 
     static const char* get_error();
     static std::pair<float, float> get_texture_size(SDL_Texture* texture);
