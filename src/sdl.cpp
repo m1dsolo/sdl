@@ -50,10 +50,6 @@ void SDL::hide_cursor() {
     SDL_HideCursor();
 }
 
-void SDL::set_window_position(int x, int y) {
-    SDL_SetWindowPosition(window_, x, y);
-}
-
 void SDL::set_render_vsync(bool vsync) {
     SDL_SetRenderVSync(renderer_, vsync);
 }
@@ -254,6 +250,20 @@ void SDL::destroy(SDL_Surface* surface) {
 
 bool SDL::point_in_rect(const SDL_FPoint* point, const SDL_FRect* rect) {
     return SDL_PointInRectFloat(point, rect);
+}
+
+void SDL::set_window_position(int x, int y) {
+    SDL_SetWindowPosition(window_, x, y);
+}
+
+std::pair<int, int> SDL::get_window_size() {
+    int w, h;
+    SDL_GetWindowSize(window_, &w, &h);
+    return {w, h};
+}
+
+bool SDL::set_window_maximized() {
+    return SDL_MaximizeWindow(window_);
 }
 
 void SDL::render_clear() {

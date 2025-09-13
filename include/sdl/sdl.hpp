@@ -68,7 +68,6 @@ public:
     static SDL_FPoint get_mouse_position();
     static SDL_Texture* get_render_target();
 
-    static void set_window_position(int x, int y);
     static void set_render_vsync(bool vsync);
     static void set_color(SDL_Color color);
     static void set_render_target(SDL_Texture* texture);
@@ -79,6 +78,10 @@ public:
     static void render_present();
     static void hide_cursor();
     static bool point_in_rect(const SDL_FPoint* point, const SDL_FRect* rect);
+
+    static void set_window_position(int x, int y);
+    static std::pair<int, int> get_window_size();
+    static bool set_window_maximized();
 
     static void destroy();
     static void destroy(SDL_Texture* texture);
