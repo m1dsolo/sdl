@@ -11,6 +11,8 @@
 #include <SDL3_mixer/SDL_mixer.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
+namespace fs = std::filesystem;
+
 namespace sdl {
 
 class SDL {
@@ -45,7 +47,7 @@ public:
     // init
     static bool init(SDL_InitFlags init_flags, const std::string& win_name, int w, int h, SDL_WindowFlags window_flags);
     static bool init_audio();
-    static bool init_ttf(const std::filesystem::path& font_path, float ptsize);
+    static bool init_ttf(const fs::path& font_path, float ptsize);
     static bool init_gamepad();
 
     // SDL
@@ -83,18 +85,9 @@ public:
     static void destroy(SDL_Surface* surface);
 
     // SDL_image
-    static SDL_Texture* load_image(const std::filesystem::path& path, int w = 0, int h = 0);
+    static SDL_Texture* load_image(const fs::path& path, int w = 0, int h = 0);
 
-    // SDL_audio
-    // static SDL_Texture* create_filled_circle_texture(int radius, SDL_Color color);
-    // static SDL_Texture* create_border_circle_texture(int radius, SDL_Color color);
-    // static SDL_Texture* merge_textures(SDL_Texture* texture1, SDL_Texture* texture2);
-    // static void set_alpha_mod(SDL_Texture* texture, Uint8 alpha);
-    // static void draw_border(const SDL_FRect* dst, float border_width, SDL_Color color);
-    // static void draw_point(int x, int y, SDL_Color color);
-    // static void draw_rect(const SDL_FRect* dst, SDL_Color color);
-    // static void draw_text(const std::string& text, const SDL_FRect* dst, SDL_Color color = BLACK, bool mid = false, int wrap_width = 0);
-    // static void blit(SDL_Surface* src_surface, const SDL_FRect* src, SDL_Surface* dst_surface, const SDL_FRect* dst);
+    // SDL_mixer
 
     // SDL_ttf
     static SDL_Surface* create_surface(const std::string& text, float ptsize, SDL_Color color = BLACK, int wrap_width = 0);
