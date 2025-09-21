@@ -17,13 +17,13 @@ namespace sdl {
 
 class SDL {
 public:
-    class TargetGuard {
+    class RenderTargetGuard {
     public:
-        TargetGuard(SDL_Texture* target) : original_target_(get_render_target()) {
+        RenderTargetGuard(SDL_Texture* target) : original_target_(get_render_target()) {
             set_render_target(target);
         }
 
-        ~TargetGuard() {
+        ~RenderTargetGuard() {
             set_render_target(original_target_);
         }
 
@@ -31,18 +31,33 @@ public:
         SDL_Texture* original_target_;
     };
 
-    static const inline SDL_Color BLACK = {0, 0, 0, 255};
-    static const inline SDL_Color WHITE = {255, 255, 255, 255};
-    static const inline SDL_Color GRAY = {128, 128, 128, 255};
-    static const inline SDL_Color RED = {255, 0, 0, 255};
-    static const inline SDL_Color GREEN = {0, 255, 0, 255};
-    static const inline SDL_Color BLUE = {0, 0, 255, 255};
-    static const inline SDL_Color YELLOW = {255, 255, 0, 255};
-    static const inline SDL_Color PURPLE = {255, 0, 255, 255};
-    static const inline SDL_Color CYAN = {0, 255, 255, 255};
-    static const inline SDL_Color PINK = {255, 192, 203, 255};
-    static const inline SDL_Color ORANGE = {255, 165, 0, 255};
-    static const inline SDL_Color TRANSPARENT = {0, 0, 0, 0};
+    class TextureColorGuard {
+    public:
+        TextureColorGuard(SDL_Texture* texture, SDL_FColor color) : texture_(texture) {
+            original_color_ = get_texture_color(texture);
+            set_texture_color(texture, color);
+        }
+        ~TextureColorGuard() {
+            set_texture_color(texture_, original_color_);
+        }
+
+    private:
+        SDL_Texture* texture_;
+        SDL_FColor original_color_;
+    };
+
+    static const inline SDL_FColor BLACK = {0.0f, 0.0f, 0.0f, 1.0f};
+    static const inline SDL_FColor WHITE = {1.0f, 1.0f, 1.0f, 1.0f};
+    static const inline SDL_FColor GRAY = {0.5f, 0.5f, 0.5f, 1.0f};
+    static const inline SDL_FColor RED = {1.0f, 0.0f, 0.0f, 1.0f};
+    static const inline SDL_FColor GREEN = {0.0f, 1.0f, 0.0f, 1.0f};
+    static const inline SDL_FColor BLUE = {0.0f, 0.0f, 1.0f, 1.0f};
+    static const inline SDL_FColor YELLOW = {1.0f, 1.0f, 0.0f, 1.0f};
+    static const inline SDL_FColor PURPLE = {1.0f, 0.0f, 1.0f, 1.0f};
+    static const inline SDL_FColor CYAN = {0.0f, 1.0f, 1.0f, 1.0f};
+    static const inline SDL_FColor PINK = {1.f, 192.0f / 255.0f, 203.0f / 255.0f, 1.0f};
+    static const inline SDL_FColor ORANGE = {1.f, 165.0f / 255.0f, 0.0f, 1.0f};
+    static const inline SDL_FColor TRANSPARENT = {0.0f, 0.0f, 0.0f, 0.0f};
 
     // init
     static bool init(SDL_InitFlags init_flags, const std::string& win_name, int w, int h, SDL_WindowFlags window_flags);
@@ -53,26 +68,30 @@ public:
     // SDL
     static void render_texture(SDL_Texture* texture, const SDL_FRect* src = nullptr, const SDL_FRect* dst = nullptr);
     static SDL_Texture* create_texture(SDL_Surface* surface);
-    static SDL_Surface* create_surface(int w, int h, SDL_Color color = BLACK, SDL_PixelFormat format = SDL_PIXELFORMAT_RGBA8888);
-    static SDL_Texture* create_texture(int w, int h, SDL_Color color = BLACK, SDL_TextureAccess access = SDL_TEXTUREACCESS_STATIC, SDL_PixelFormat format = SDL_PIXELFORMAT_RGBA8888);
-    static SDL_Texture* create_circle_texture(float radius, SDL_Color color = BLACK);
-    static SDL_Texture* create_filled_circle_texture(float radius, SDL_Color color = BLACK);
+    static SDL_Surface* create_surface(int w, int h, SDL_FColor color = BLACK, SDL_PixelFormat format = SDL_PIXELFORMAT_RGBA8888);
+    static SDL_Texture* create_texture(int w, int h, SDL_FColor color = BLACK, SDL_TextureAccess access = SDL_TEXTUREACCESS_STATIC, SDL_PixelFormat format = SDL_PIXELFORMAT_RGBA8888);
+    static SDL_Texture* create_circle_texture(float radius, SDL_FColor color = BLACK);
+    static SDL_Texture* create_filled_circle_texture(float radius, SDL_FColor color = BLACK);
 
-    static void render_rect(const SDL_FRect* dst, SDL_Color color);
-    static void render_filled_rect(const SDL_FRect* dst, SDL_Color color);
-    static void render_circle(const SDL_FRect* dst, SDL_Color color);
-    static void render_filled_circle(const SDL_FRect* dst, SDL_Color color);
+    static void render_rect(const SDL_FRect* dst, SDL_FColor color);
+    static void render_filled_rect(const SDL_FRect* dst, SDL_FColor color);
+    static void render_circle(const SDL_FRect* dst, SDL_FColor color);
+    static void render_filled_circle(const SDL_FRect* dst, SDL_FColor color);
 
     static const char* get_error();
+    static SDL_FColor get_texture_color(SDL_Texture* texture);
     static std::pair<float, float> get_texture_size(SDL_Texture* texture);
     static SDL_FPoint get_mouse_position();
     static SDL_Texture* get_render_target();
 
     static void set_render_vsync(bool vsync);
-    static void set_color(SDL_Color color);
+    static void set_texture_color(SDL_Texture* texture, SDL_FColor color);
+    static void set_color(SDL_FColor color);
     static void set_render_target(SDL_Texture* texture);
     static void set_blend_mode(SDL_Surface* surface, SDL_BlendMode mode);
     static void set_blend_mode(SDL_Texture* texture, SDL_BlendMode mode);
+
+    static SDL_Color fcolor2color(const SDL_FColor& fcolor);
 
     static void render_clear();
     static void render_present();
@@ -93,8 +112,8 @@ public:
     // SDL_mixer
 
     // SDL_ttf
-    static SDL_Surface* create_surface(const std::string& text, float ptsize, SDL_Color color = BLACK, int wrap_width = 0);
-    static SDL_Texture* create_texture(const std::string& text, float ptsize, SDL_Color color = BLACK, int wrap_width = 0);
+    static SDL_Surface* create_surface(const std::string& text, float ptsize, SDL_FColor color = BLACK, int wrap_width = 0);
+    static SDL_Texture* create_texture(const std::string& text, float ptsize, SDL_FColor color = BLACK, int wrap_width = 0);
 
     static void set_font_size(float ptsize);
 
@@ -109,7 +128,7 @@ private:
     static inline SDL_Gamepad* gamepad_ = nullptr;
 };
 
-inline bool operator==(const SDL_Color& lhs, const SDL_Color& rhs) {
+inline bool operator==(const SDL_FColor& lhs, const SDL_FColor& rhs) {
     return lhs.r == rhs.r && lhs.g == rhs.g && lhs.b == rhs.b && lhs.a == rhs.a;
 }
 
