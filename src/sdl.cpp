@@ -1,3 +1,4 @@
+#include "SDL3/SDL_render.h"
 #include <sdl/sdl.hpp>
 
 #include <numbers>
@@ -59,6 +60,10 @@ void SDL::set_texture_color(SDL_Texture* texture, SDL_FColor color) {
     SDL_SetTextureAlphaModFloat(texture, color.a);
 }
 
+void SDL::set_texture_scalemode(SDL_Texture* texture, SDL_ScaleMode mode) {
+    SDL_SetTextureScaleMode(texture, mode);
+}
+
 void SDL::set_color(SDL_FColor color) {
     SDL_SetRenderDrawColorFloat(renderer_, color.r, color.g, color.b, color.a);
 }
@@ -75,8 +80,13 @@ SDL_Texture* SDL::load_image(const std::filesystem::path& path, int w, int h) {
     return texture;
 }
 
-void SDL::render_texture(SDL_Texture* texture, const SDL_FRect* src, const SDL_FRect* dst) {
-    SDL_RenderTexture(renderer_, texture, src, dst);
+void SDL::render_texture(SDL_Texture* texture, const SDL_FRect* src, const SDL_FRect* dst, SDL_FlipMode flip) {
+    if (flip != SDL_FLIP_NONE) {
+        SDL_RenderTextureRotated(renderer_, texture, src, dst, 0.0, nullptr, flip);
+        return;
+    } else {
+        SDL_RenderTexture(renderer_, texture, src, dst);
+    }
 }
 
 SDL_Surface* SDL::create_surface(int w, int h, SDL_FColor color, SDL_PixelFormat format) {

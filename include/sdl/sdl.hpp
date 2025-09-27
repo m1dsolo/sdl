@@ -66,7 +66,7 @@ public:
     static bool init_gamepad();
 
     // SDL
-    static void render_texture(SDL_Texture* texture, const SDL_FRect* src = nullptr, const SDL_FRect* dst = nullptr);
+    static void render_texture(SDL_Texture* texture, const SDL_FRect* src = nullptr, const SDL_FRect* dst = nullptr, SDL_FlipMode flip = SDL_FLIP_NONE);
     static SDL_Texture* create_texture(SDL_Surface* surface);
     static SDL_Surface* create_surface(int w, int h, SDL_FColor color = BLACK, SDL_PixelFormat format = SDL_PIXELFORMAT_RGBA8888);
     static SDL_Texture* create_texture(int w, int h, SDL_FColor color = BLACK, SDL_TextureAccess access = SDL_TEXTUREACCESS_STATIC, SDL_PixelFormat format = SDL_PIXELFORMAT_RGBA8888);
@@ -86,6 +86,7 @@ public:
 
     static void set_render_vsync(bool vsync);
     static void set_texture_color(SDL_Texture* texture, SDL_FColor color);
+    static void set_texture_scalemode(SDL_Texture* texture, SDL_ScaleMode mode);
     static void set_color(SDL_FColor color);
     static void set_render_target(SDL_Texture* texture);
     static void set_blend_mode(SDL_Surface* surface, SDL_BlendMode mode);
