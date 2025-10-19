@@ -64,7 +64,7 @@ void SDL::set_texture_scalemode(SDL_Texture* texture, SDL_ScaleMode mode) {
     SDL_SetTextureScaleMode(texture, mode);
 }
 
-void SDL::set_color(SDL_FColor color) {
+void SDL::set_render_color(SDL_FColor color) {
     SDL_SetRenderDrawColorFloat(renderer_, color.r, color.g, color.b, color.a);
 }
 
@@ -127,7 +127,7 @@ SDL_Texture* SDL::create_texture(int w, int h, SDL_FColor color, SDL_TextureAcce
     access = static_cast<SDL_TextureAccess>(access | SDL_TEXTUREACCESS_TARGET);
     SDL_Texture* texture = SDL_CreateTexture(renderer_, format, access, w, h);
     RenderTargetGuard guard{texture};
-    set_color(color);
+    set_render_color(color);
     render_clear();
 
     return texture;
@@ -154,17 +154,17 @@ SDL_Texture* SDL::create_filled_circle_texture(float radius, SDL_FColor color) {
 }
 
 void SDL::render_rect(const SDL_FRect* dst, SDL_FColor color) {
-    set_color(color);
+    set_render_color(color);
     SDL_RenderRect(renderer_, dst);
 }
 
 void SDL::render_filled_rect(const SDL_FRect* dst, SDL_FColor color) {
-    set_color(color);
+    set_render_color(color);
     SDL_RenderFillRect(renderer_, dst);
 }
 
 void SDL::render_circle(const SDL_FRect* dst, SDL_FColor color) {
-    set_color(color);
+    set_render_color(color);
     
     float center_x = dst->x + dst->w / 2.0f;
     float center_y = dst->y + dst->h / 2.0f;
@@ -183,7 +183,7 @@ void SDL::render_circle(const SDL_FRect* dst, SDL_FColor color) {
 }
 
 void SDL::render_filled_circle(const SDL_FRect* dst, SDL_FColor color) {
-    set_color(color);
+    set_render_color(color);
 
     const float center_x = dst->x + dst->w / 2.0f;
     const float center_y = dst->y + dst->h / 2.0f;

@@ -46,6 +46,26 @@ public:
         SDL_FColor original_color_;
     };
 
+    class RenderColorGuard {
+    public:
+        RenderColorGuard(SDL_FColor color) {
+            SDL_GetRenderDrawColorFloat(SDL::renderer(), &original_color_.r, &original_color_.g, &original_color_.b, &original_color_.a);
+            set_render_color(color);
+        }
+        ~RenderColorGuard() {
+            set_render_color(original_color_);
+        }
+
+    private:
+        SDL_FColor original_color_;
+    };
+
+    enum class TextAlign {
+        Left,
+        Center,
+        Right
+    };
+
     static const inline SDL_FColor BLACK = {0.0f, 0.0f, 0.0f, 1.0f};
     static const inline SDL_FColor WHITE = {1.0f, 1.0f, 1.0f, 1.0f};
     static const inline SDL_FColor GRAY = {0.5f, 0.5f, 0.5f, 1.0f};
@@ -87,7 +107,7 @@ public:
     static void set_render_vsync(bool vsync);
     static void set_texture_color(SDL_Texture* texture, SDL_FColor color);
     static void set_texture_scalemode(SDL_Texture* texture, SDL_ScaleMode mode);
-    static void set_color(SDL_FColor color);
+    static void set_render_color(SDL_FColor color);
     static void set_render_target(SDL_Texture* texture);
     static void set_blend_mode(SDL_Surface* surface, SDL_BlendMode mode);
     static void set_blend_mode(SDL_Texture* texture, SDL_BlendMode mode);
