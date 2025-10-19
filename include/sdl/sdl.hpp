@@ -66,18 +66,21 @@ public:
         Right
     };
 
-    static const inline SDL_FColor BLACK = {0.0f, 0.0f, 0.0f, 1.0f};
-    static const inline SDL_FColor WHITE = {1.0f, 1.0f, 1.0f, 1.0f};
-    static const inline SDL_FColor GRAY = {0.5f, 0.5f, 0.5f, 1.0f};
-    static const inline SDL_FColor RED = {1.0f, 0.0f, 0.0f, 1.0f};
-    static const inline SDL_FColor GREEN = {0.0f, 1.0f, 0.0f, 1.0f};
-    static const inline SDL_FColor BLUE = {0.0f, 0.0f, 1.0f, 1.0f};
-    static const inline SDL_FColor YELLOW = {1.0f, 1.0f, 0.0f, 1.0f};
-    static const inline SDL_FColor PURPLE = {1.0f, 0.0f, 1.0f, 1.0f};
-    static const inline SDL_FColor CYAN = {0.0f, 1.0f, 1.0f, 1.0f};
-    static const inline SDL_FColor PINK = {1.f, 192.0f / 255.0f, 203.0f / 255.0f, 1.0f};
-    static const inline SDL_FColor ORANGE = {1.f, 165.0f / 255.0f, 0.0f, 1.0f};
-    static const inline SDL_FColor TRANSPARENT = {0.0f, 0.0f, 0.0f, 0.0f};
+    struct Color {
+        static const inline SDL_FColor Black = {0.0f, 0.0f, 0.0f, 1.0f};
+        static const inline SDL_FColor White = {1.0f, 1.0f, 1.0f, 1.0f};
+        static const inline SDL_FColor Gray = {0.5f, 0.5f, 0.5f, 1.0f};
+        static const inline SDL_FColor Red = {1.0f, 0.0f, 0.0f, 1.0f};
+        static const inline SDL_FColor Green = {0.0f, 1.0f, 0.0f, 1.0f};
+        static const inline SDL_FColor Blue = {0.0f, 0.0f, 1.0f, 1.0f};
+        static const inline SDL_FColor Yellow = {1.0f, 1.0f, 0.0f, 1.0f};
+        static const inline SDL_FColor Purple = {1.0f, 0.0f, 1.0f, 1.0f};
+        static const inline SDL_FColor Cyan = {0.0f, 1.0f, 1.0f, 1.0f};
+        static const inline SDL_FColor Pink = {1.f, 192.0f / 255.0f, 203.0f / 255.0f, 1.0f};
+        static const inline SDL_FColor Orange = {1.f, 165.0f / 255.0f, 0.0f, 1.0f};
+        static const inline SDL_FColor Transparent = {0.0f, 0.0f, 0.0f, 0.0f};
+    };
+
 
     // init
     static bool init(SDL_InitFlags init_flags, const std::string& win_name, int w, int h, SDL_WindowFlags window_flags);
@@ -88,10 +91,10 @@ public:
     // SDL
     static void render_texture(SDL_Texture* texture, const SDL_FRect* src = nullptr, const SDL_FRect* dst = nullptr, SDL_FlipMode flip = SDL_FLIP_NONE);
     static SDL_Texture* create_texture(SDL_Surface* surface);
-    static SDL_Surface* create_surface(int w, int h, SDL_FColor color = BLACK, SDL_PixelFormat format = SDL_PIXELFORMAT_RGBA8888);
-    static SDL_Texture* create_texture(int w, int h, SDL_FColor color = BLACK, SDL_TextureAccess access = SDL_TEXTUREACCESS_STATIC, SDL_PixelFormat format = SDL_PIXELFORMAT_RGBA8888);
-    static SDL_Texture* create_circle_texture(float radius, SDL_FColor color = BLACK);
-    static SDL_Texture* create_filled_circle_texture(float radius, SDL_FColor color = BLACK);
+    static SDL_Surface* create_surface(int w, int h, SDL_FColor color = Color::Black, SDL_PixelFormat format = SDL_PIXELFORMAT_RGBA8888);
+    static SDL_Texture* create_texture(int w, int h, SDL_FColor color = Color::Black, SDL_TextureAccess access = SDL_TEXTUREACCESS_STATIC, SDL_PixelFormat format = SDL_PIXELFORMAT_RGBA8888);
+    static SDL_Texture* create_circle_texture(float radius, SDL_FColor color = Color::Black);
+    static SDL_Texture* create_filled_circle_texture(float radius, SDL_FColor color = Color::Black);
 
     static void render_rect(const SDL_FRect* dst, SDL_FColor color);
     static void render_filled_rect(const SDL_FRect* dst, SDL_FColor color);
@@ -133,8 +136,8 @@ public:
     // SDL_mixer
 
     // SDL_ttf
-    static SDL_Surface* create_surface(const std::string& text, float ptsize, SDL_FColor color = BLACK, int wrap_width = 0);
-    static SDL_Texture* create_texture(const std::string& text, float ptsize, SDL_FColor color = BLACK, int wrap_width = 0);
+    static SDL_Surface* create_surface(const std::string& text, float ptsize, SDL_FColor color = Color::Black, int wrap_width = 0);
+    static SDL_Texture* create_texture(const std::string& text, float ptsize, SDL_FColor color = Color::Black, int wrap_width = 0);
 
     static void set_font_size(float ptsize);
 

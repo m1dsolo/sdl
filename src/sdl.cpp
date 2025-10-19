@@ -71,7 +71,7 @@ void SDL::set_render_color(SDL_FColor color) {
 SDL_Texture* SDL::load_image(const std::filesystem::path& path, int w, int h) {
     auto* texture = IMG_LoadTexture(renderer_, path.c_str());
     if (w && h) {
-        auto* scaled_texture = create_texture(w, h, BLACK, SDL_TEXTUREACCESS_TARGET);
+        auto* scaled_texture = create_texture(w, h, Color::Black, SDL_TEXTUREACCESS_TARGET);
         set_render_target(scaled_texture);
         render_texture(texture, nullptr, nullptr);
         destroy(texture);
@@ -91,7 +91,7 @@ void SDL::render_texture(SDL_Texture* texture, const SDL_FRect* src, const SDL_F
 
 SDL_Surface* SDL::create_surface(int w, int h, SDL_FColor color, SDL_PixelFormat format) {
     SDL_Surface* surface = SDL_CreateSurface(w, h, format);
-    if (color != BLACK) {
+    if (color != Color::Black) {
         SDL_Color color_uint8 = fcolor2color(color);
         SDL_FillSurfaceRect(surface, nullptr, SDL_MapSurfaceRGBA(surface, color_uint8.r, color_uint8.g, color_uint8.b, color_uint8.a));
     }
@@ -135,7 +135,7 @@ SDL_Texture* SDL::create_texture(int w, int h, SDL_FColor color, SDL_TextureAcce
 
 SDL_Texture* SDL::create_circle_texture(float radius, SDL_FColor color) {
     auto size = static_cast<int>(radius * 2);
-    auto texture = create_texture(size, size, TRANSPARENT, SDL_TEXTUREACCESS_TARGET);
+    auto texture = create_texture(size, size, Color::Transparent, SDL_TEXTUREACCESS_TARGET);
     set_blend_mode(texture, SDL_BLENDMODE_BLEND);
     auto target = RenderTargetGuard{texture};
     SDL_FRect dst = {0.f, 0.f, static_cast<float>(size) - 1.f, static_cast<float>(size) - 1.f};
@@ -145,7 +145,7 @@ SDL_Texture* SDL::create_circle_texture(float radius, SDL_FColor color) {
 
 SDL_Texture* SDL::create_filled_circle_texture(float radius, SDL_FColor color) {
     auto size = static_cast<int>(radius * 2);
-    auto texture = create_texture(size, size, TRANSPARENT, SDL_TEXTUREACCESS_TARGET);
+    auto texture = create_texture(size, size, Color::Transparent, SDL_TEXTUREACCESS_TARGET);
     set_blend_mode(texture, SDL_BLENDMODE_BLEND);
     auto target = RenderTargetGuard{texture};
     SDL_FRect dst = {0.f, 0.f, static_cast<float>(size) - 1.f, static_cast<float>(size) - 1.f};
