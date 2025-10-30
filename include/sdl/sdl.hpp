@@ -93,7 +93,7 @@ public:
     static SDL_Texture* create_texture(SDL_Surface* surface);
     static SDL_Surface* create_surface(int w, int h, SDL_FColor color = Color::Black, SDL_PixelFormat format = SDL_PIXELFORMAT_RGBA8888);
     static SDL_Texture* create_texture(int w, int h, SDL_FColor color = Color::Black, SDL_TextureAccess access = SDL_TEXTUREACCESS_STATIC, SDL_PixelFormat format = SDL_PIXELFORMAT_RGBA8888);
-    static SDL_Texture* create_circle_texture(float radius, SDL_FColor color = Color::Black);
+    static SDL_Texture* create_circle_texture(float radius, SDL_FColor color = Color::Black, float thichness = 1.f);
     static SDL_Texture* create_filled_circle_texture(float radius, SDL_FColor color = Color::Black);
 
     static void render_rect(const SDL_FRect* dst, SDL_FColor color);

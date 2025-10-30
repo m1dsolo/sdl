@@ -133,22 +133,24 @@ SDL_Texture* SDL::create_texture(int w, int h, SDL_FColor color, SDL_TextureAcce
     return texture;
 }
 
-SDL_Texture* SDL::create_circle_texture(float radius, SDL_FColor color) {
-    auto size = static_cast<int>(radius * 2);
+SDL_Texture* SDL::create_circle_texture(float radius, SDL_FColor color, float thichness) {
+    auto size = radius * 2;
     auto texture = create_texture(size, size, Color::Transparent, SDL_TEXTUREACCESS_TARGET);
     set_blend_mode(texture, SDL_BLENDMODE_BLEND);
     auto target = RenderTargetGuard{texture};
-    SDL_FRect dst = {0.f, 0.f, static_cast<float>(size) - 1.f, static_cast<float>(size) - 1.f};
-    render_circle(&dst, color);
+    SDL_FRect dst = {0.f, 0.f, size - 1.f, size - 1.f};
+    render_filled_circle(&dst, color);
+    dst = {thichness, thichness, size - 1.f - thichness * 2.f, size - 1.f - thichness * 2.f};
+    render_filled_circle(&dst, Color::Transparent);
     return texture;
 }
 
 SDL_Texture* SDL::create_filled_circle_texture(float radius, SDL_FColor color) {
-    auto size = static_cast<int>(radius * 2);
+    auto size = radius * 2;
     auto texture = create_texture(size, size, Color::Transparent, SDL_TEXTUREACCESS_TARGET);
     set_blend_mode(texture, SDL_BLENDMODE_BLEND);
     auto target = RenderTargetGuard{texture};
-    SDL_FRect dst = {0.f, 0.f, static_cast<float>(size) - 1.f, static_cast<float>(size) - 1.f};
+    SDL_FRect dst = {0.f, 0.f, size - 1.f, size - 1.f};
     render_filled_circle(&dst, color);
     return texture;
 }
