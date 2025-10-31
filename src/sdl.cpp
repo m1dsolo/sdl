@@ -155,9 +155,20 @@ SDL_Texture* SDL::create_filled_circle_texture(float radius, SDL_FColor color) {
     return texture;
 }
 
-void SDL::render_rect(const SDL_FRect* dst, SDL_FColor color) {
-    set_render_color(color);
-    SDL_RenderRect(renderer_, dst);
+void SDL::render_rect(const SDL_FRect* dst, SDL_FColor color, float thickness) {
+    if (thickness == 1) {
+        set_render_color(color);
+        SDL_RenderRect(renderer_, dst);
+    } else {
+        render_filled_rect(dst, color);
+        SDL_FRect inner_rect = {
+            dst->x + thickness,
+            dst->y + thickness,
+            dst->w - 2 * thickness,
+            dst->h - 2 * thickness
+        };
+        render_filled_rect(&inner_rect, Color::Transparent);
+    }
 }
 
 void SDL::render_filled_rect(const SDL_FRect* dst, SDL_FColor color) {
