@@ -138,6 +138,7 @@ public:
     // SDL_ttf
     static SDL_Surface* create_surface(const std::string& text, float ptsize, SDL_FColor color = Color::Black, int wrap_width = 0);
     static SDL_Texture* create_texture(const std::string& text, float ptsize, SDL_FColor color = Color::Black, int wrap_width = 0);
+    static void render_text(SDL_Texture* texture, float x, float y, const std::string& text, float ptsize, SDL_FColor color = Color::Black, int wrap_width = 0);
 
     static void set_font_size(float ptsize);
 

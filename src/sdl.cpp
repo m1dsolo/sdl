@@ -119,6 +119,15 @@ SDL_Texture* SDL::create_texture(const std::string& text, float ptsize, SDL_FCol
     return texture;
 }
 
+void SDL::render_text(SDL_Texture* texture, float x, float y, const std::string& text, float ptsize, SDL_FColor color, int wrap_width) {
+    auto tmp_texture = create_texture(text, ptsize, color, wrap_width);
+    RenderTargetGuard guard{texture};
+    auto [w, h] = get_texture_size(tmp_texture);
+    SDL_FRect dst = {x, y, w, h};
+    render_texture(tmp_texture, nullptr, &dst);
+    destroy(tmp_texture);
+}
+
 void SDL::set_font_size(float ptsize) {
     TTF_SetFontSize(font_, ptsize);
 }
