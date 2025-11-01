@@ -83,7 +83,6 @@ SDL_Texture* SDL::load_image(const std::filesystem::path& path, int w, int h) {
 void SDL::render_texture(SDL_Texture* texture, const SDL_FRect* src, const SDL_FRect* dst, SDL_FlipMode flip) {
     if (flip != SDL_FLIP_NONE) {
         SDL_RenderTextureRotated(renderer_, texture, src, dst, 0.0, nullptr, flip);
-        return;
     } else {
         SDL_RenderTexture(renderer_, texture, src, dst);
     }
@@ -169,14 +168,17 @@ void SDL::render_rect(const SDL_FRect* dst, SDL_FColor color, float thickness) {
         set_render_color(color);
         SDL_RenderRect(renderer_, dst);
     } else {
-        render_filled_rect(dst, color);
-        SDL_FRect inner_rect = {
-            dst->x + thickness,
-            dst->y + thickness,
-            dst->w - 2 * thickness,
-            dst->h - 2 * thickness
-        };
-        render_filled_rect(&inner_rect, Color::Transparent);
+        SDL_FRect top = {dst->x, dst->y, dst->w, thickness};
+        render_filled_rect(&top, color);
+
+        SDL_FRect bottom = {dst->x, dst->y + dst->h - thickness, dst->w, thickness};
+        render_filled_rect(&bottom, color);
+
+        SDL_FRect left = {dst->x, dst->y + thickness, thickness, dst->h - 2*thickness};
+        render_filled_rect(&left, color);
+
+        SDL_FRect right = {dst->x + dst->w - thickness, dst->y + thickness, thickness, dst->h - 2*thickness};
+        render_filled_rect(&right, color);
     }
 }
 
